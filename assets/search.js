@@ -44,12 +44,44 @@ require([
         $searchResultsCount.text(res.count);
         $searchQuery.text(res.query);
 
-        console.log(res);
+        console.log('gitbook: ', gitbook);
 
-        // Create an <li> element for each result
-        res.results.forEach(function(res) {
+        // Generate an array descending through the book directory hierarchy based on the current selected page 
+        // Example: ['chapter/section/page', 'chapter/section', 'chapter', '']
+        // Also, assign each substring a value
+        var hierarchy = gitbook.state.filepath.split('/').map(function(level, index, array) {
+            return { substring: array.slice(0, index).join('/'), value: index };
+        }).reverse();
+
+        // Map each value to its substring
+        var valueMap = { };
+        hierarchy.forEach(function(h) {
+            valueMap[h.value] = h.substring;
+        });
+
+        // Generate an array of the results with weights based on where they fall in the hierarchy
+        var weightedResults = res.results.map(function(res, index, results) {
+            for (var i = 0; i < hierarchy.length; i++) {
+                var h = hierarchy[i];
+                if (res.url.includes(h.substring)) {
+                    return { result: res, weight: h.value };
+                }
+            }
+            return { result: res, weight: -1 };
+        });
+
+        // Sort the weighted search results and create a <li> element for each result
+        weightedResults.sort(function(a, b) {
+            return b.weight - a.weight;
+        }).forEach(function(wres, index, wresults) {
+            var weight = wres.weight,
+                   res = wres.result;
+
+            console.log('res: ', res);
+
             var $li = $('<li>', {
-                'class': 'search-results-item'
+                'class': 'search-results-item',
+                'weight': weight
             });
 
             var $title = $('<h3>');
@@ -67,6 +99,16 @@ require([
                 content = content.slice(0, MAX_DESCRIPTION_SIZE).trim()+'...';
             }
             var $content = $('<p>').html(content);
+
+            // Insert a title showing how deep into the directory hierarchy the following results are
+            if (index === 0 || weight !== wresults[index - 1].weight) {
+                $sectionli = $('<li>', { 'class': 'search-results-item' });
+                $sectiontitle = $('<h2>', { text: valueMap[weight] });
+                $sectionhr = $('<hr>');
+                $sectiontitle.appendTo($sectionli);
+                $sectionli.appendTo($searchList);
+                $sectionhr.appendTo($searchList);
+            }
 
             $link.appendTo($title);
             $title.appendTo($li);
