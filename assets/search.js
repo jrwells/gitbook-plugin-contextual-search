@@ -44,6 +44,8 @@ require([
         $searchResultsCount.text(res.count);
         $searchQuery.text(res.query);
 
+        console.log(res);
+
         // Create an <li> element for each result
         res.results.forEach(function(res) {
             var $li = $('<li>', {
