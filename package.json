@@ -1,20 +1,20 @@
 {
-  "name": "gitbook-plugin-search",
+  "name": "gitbook-plugin-contextual-search",
   "description": "Search input for your GitBook",
   "main": "index.js",
-  "version": "2.2.1",
+  "version": "0.0.2",
   "engines": {
     "gitbook": ">=3.0.0-pre.0"
   },
   "dependencies": {},
-  "homepage": "https://github.com/GitbookIO/plugin-search",
+  "homepage": "https://github.com/jrwells/gitbook-plugin-contextual-search",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GitbookIO/plugin-search.git"
+    "url": "https://github.com/jrwells/gitbook-plugin-contextual-search.git"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/GitbookIO/plugin-search/issues"
+    "url": "https://github.com/jrwells/gitbook-plugin-contextual-search/issues"
   },
   "devDependencies": {
     "eslint": "^2.7.0",
