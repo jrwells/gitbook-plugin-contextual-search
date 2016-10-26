@@ -44,40 +44,26 @@ require([
         $searchResultsCount.text(res.count);
         $searchQuery.text(res.query);
 
-        console.log('gitbook: ', gitbook);
-
         // Generate an array descending through the book directory hierarchy based on the current selected page 
-        // Example: ['chapter/section/page', 'chapter/section', 'chapter', '']
-        // Also, assign each substring a value
-        var hierarchy = gitbook.state.filepath.split('/').map(function(level, index, array) {
-            return { substring: array.slice(0, index).join('/'), value: index };
+        // Example: ['chapter.section.page', 'chapter.section', 'chapter', '']
+        var hierarchy = gitbook.state.level.split('.').map(function(level, index, array) {
+            return array.slice(0, index).join('.');
         }).reverse();
-
-        // Map each value to its substring
-        var valueMap = { };
-        hierarchy.forEach(function(h) {
-            valueMap[h.value] = h.substring;
-        });
 
         // Generate an array of the results with weights based on where they fall in the hierarchy
         var weightedResults = res.results.map(function(res, index, results) {
             for (var i = 0; i < hierarchy.length; i++) {
-                var h = hierarchy[i];
-                if (res.url.includes(h.substring)) {
-                    return { result: res, weight: h.value };
-                }
+                if (res.level.includes(hierarchy[i])) { return { result: res, weight: i }; }
             }
-            return { result: res, weight: -1 };
+            return { result: res, weight: hierarchy.length };
         });
 
         // Sort the weighted search results and create a <li> element for each result
         weightedResults.sort(function(a, b) {
-            return b.weight - a.weight;
+            return a.weight - b.weight;
         }).forEach(function(wres, index, wresults) {
             var weight = wres.weight,
-                   res = wres.result;
-
-            console.log('res: ', res);
+                result = wres.result;
 
             var $li = $('<li>', {
                 'class': 'search-results-item',
@@ -87,14 +73,14 @@ require([
             var $title = $('<h3>');
 
             var $link = $('<a>', {
-                'href': gitbook.state.basePath + '/' + res.url,
-                'text': res.title,
+                'href': gitbook.state.basePath + '/' + result.url,
+                'text': result.title,
                 'click': function(e) {
                     closeSearch();
                 }
             });
 
-            var content = res.body.trim();
+            var content = result.body.trim();
             if (content.length > MAX_DESCRIPTION_SIZE) {
                 content = content.slice(0, MAX_DESCRIPTION_SIZE).trim()+'...';
             }
@@ -102,9 +88,9 @@ require([
 
             // Insert a title showing how deep into the directory hierarchy the following results are
             if (index === 0 || weight !== wresults[index - 1].weight) {
-                $sectionli = $('<li>', { 'class': 'search-results-item' });
-                $sectiontitle = $('<h2>', { text: valueMap[weight] });
-                $sectionhr = $('<hr>');
+                var $sectionli = $('<li>', { 'class': 'search-results-item search-results-title-item' }),
+                    $sectiontitle = $('<h2>', { 'text': res.levels[hierarchy[weight]] }),
+                    $sectionhr = $('<hr>');
                 $sectiontitle.appendTo($sectionli);
                 $sectionli.appendTo($searchList);
                 $sectionhr.appendTo($searchList);

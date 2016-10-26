@@ -1,25 +1,22 @@
-# search
+# contextual-search
 
-This plugin is a default plugin for GitBook, it adds an interactive search bar to your book.
+This plugin replaces the default [search](https://github.com/GitbookIO/plugin-search) plugin for GitBook, it adds some contextual sorting to the search results.
 
-This plugin is backend agnostic.
+This plugin uses the [lunr-depth](https://github.com/jrwells/gitbook-plugin-lunr-depth) backend.
 
-### Disable this plugin
+### Usuage
 
-This is a default plugin and it can be disabled using a `book.json` configuration:
+The default [search](https://github.com/GitbookIO/plugin-search) must be disabled using a book.json configuration and this plugin must be added:
 
 ```
 {
-    plugins: ["-search"]
+    plugins: ["-search", "contextual-search"]
 }
 ```
 
-### Backends
+## search
 
-| Backend | Plugin Name | Description |
-| ------- | ----------- | ----------- |
-| [Lunr](https://github.com/GitbookIO/plugin-lunr) | `lunr` | Index the content into a local/offlien index |
-| [Algolia](https://github.com/GitbookIO/plugin-algolia) | `algolia` | Index the content in Algolia |
+This is a drop in replacement for the default [search](https://github.com/GitbookIO/plugin-search) plugin, all of the original functionality is still present.
 
 ### Search options
 
