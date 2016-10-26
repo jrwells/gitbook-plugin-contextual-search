@@ -16,11 +16,8 @@ The default [search](https://github.com/GitbookIO/plugin-search) must be disable
 
 ## search
 
-This is a drop in replacement for the default [search](https://github.com/GitbookIO/plugin-search) plugin, all of the original functionality is still present.
-
-### Search options
-
-Most backends for the `plugin-search` will support a range of common configuration listed below. **You should check the description of each backend in case some do not support some options**.
+This is *mostly* a drop in replacement for the default [search](https://github.com/GitbookIO/plugin-search) plugin, most of the original functionality is still present;
+the backend is slightly less agnostic because it relies on depth information.
 
 
 #### Adding keywords to a page
